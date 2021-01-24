@@ -23,7 +23,7 @@ class Alcohol:
         self.unit = unit
         self.price = price
     def __str__(self):
-        return "{}, alcohol de {} costoxunidad de {}".format(self.name, self.country, self.price)
+        return "{};${};disponibles {}, alcohol de {} ".format(self.name, self.price, self.unit, self.country)
     def compra(self, cantidad : int):
         try:
             unit1 = self.unit - cantidad
@@ -52,3 +52,10 @@ class Alcohol:
         self.country = country
     def set_price(self, price):
         self.price = price
+
+if __name__== '__main__':
+    objecto = Alcohol(12, "tequila", "MX", 10, 70000)
+    print(objecto)
+    print(objecto.compra(7))
+    print(objecto.compra(4))
+    print(objecto.compra('a'))
