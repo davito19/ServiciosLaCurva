@@ -33,6 +33,8 @@ class DataCliente(BaseDatos):
     def get_data(self):
         return self.data
 
+clientes =  DataCliente("clientes_licoreria", "Clientes")
+
 class QueHacer(BaseRequestHandler):
     def handle(self):
         print("conection from {}".format(self.client_address))
@@ -83,11 +85,12 @@ class QueHacer(BaseRequestHandler):
         data='402. Ingrese el usuario\n'.encode()
         self.request.send(data)
         data = self.request.recv(1024).decode()
-        if data[:-2] == cliente.get_id():
+        if clientes.search_id(data[:-2]):
+            id = data[:-2]
             data = '403. Usuario correcto ingrese contraseña\n'.encode()
             self.request.send(data)
             data = self.request.recv(1024).decode()
-            if cliente.password_validation(data[:-2]):
+            if clientes.search_password(id, data[:-2]):
                 data = '504. Loggueo exitoso\n'.encode()
                 self.request.send(data)
                 return True
@@ -101,7 +104,7 @@ class QueHacer(BaseRequestHandler):
             return False
 
 
-#myserver = ThreadingTCPServer(("localhost", 5559), QueHacer)
-#myserver.serve_forever()
 
-clientes =  DataCliente("clientes_licoreria", "Clientes")
+myserver = ThreadingTCPServer(("localhost", 5553), QueHacer)
+myserver.serve_forever()
+
