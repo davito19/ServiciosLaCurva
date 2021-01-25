@@ -99,6 +99,11 @@ class Cliente:
                     break
                 else:
                     print("contraseña incorrecta")
+    def password_validation(self, password):
+        if self.password == password:
+            return True
+        else:
+            return False
 
 
 class ClienteBanco(Cliente):
