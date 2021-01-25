@@ -1,7 +1,37 @@
 from socketserver import ThreadingTCPServer, BaseRequestHandler
 import objetos as ob
+import sqlite3 as sql
 
-cliente = ob.ClienteAlcoholeria("a1","Ana",12345,21,"ana",[])
+
+class BaseDatos:
+    def __init__(self, base_datos : str, table : str):
+        self.base_datos = base_datos
+        self.conexion = sql.connect(self.base_datos)
+        self.cursor = self.conexion.cursor()
+    def __str__(self):
+        return "Base de datos de {}".format(self.base_datos)
+
+class DataCliente(BaseDatos):
+    def __init__(self, base_datos : str, table : str):
+        super().__init__(base_datos, table)
+        self.cursor.execute("SELECT * FROM " + table)
+        self.data = self.cursor.fetchall()
+        self.clientes = {}
+        for i in self.data:
+            moves = i[5].split(";")
+            self.clientes[i[0]] = ob.ClienteAlcoholeria(i[0],i[1],i[2],i[3],i[4],moves)
+    def search_id(self, id):
+        for key in self.clientes:
+            if id == self.clientes[key].get_id():
+                return True
+        return False
+    def search_password(self, id, password):
+        if self.clientes[id].password_validation(password):
+            return True
+        else:
+            return False
+    def get_data(self):
+        return self.data
 
 class QueHacer(BaseRequestHandler):
     def handle(self):
@@ -71,6 +101,7 @@ class QueHacer(BaseRequestHandler):
             return False
 
 
-myserver = ThreadingTCPServer(("localhost", 5559), QueHacer)
-myserver.serve_forever()
-print("hola")
+#myserver = ThreadingTCPServer(("localhost", 5559), QueHacer)
+#myserver.serve_forever()
+
+clientes =  DataCliente("clientes_licoreria", "Clientes")
