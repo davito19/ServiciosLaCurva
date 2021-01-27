@@ -23,7 +23,7 @@ class Alcohol:
         self.unit = unit
         self.price = price
     def __str__(self):
-        return "{};${};disponibles {}, alcohol de {} ".format(self.name, self.price, self.unit, self.country)
+        return "{}. {};${};disponibles {}, alcohol de {} \n".format(self.id, self.name, self.price, self.unit, self.country)
     def compra(self, cantidad : int):
         try:
             unit1 = self.unit - cantidad
