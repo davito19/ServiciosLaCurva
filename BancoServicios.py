@@ -126,16 +126,16 @@ class QueHacer(BaseRequestHandler):
     def consignar(self):
         data = "404. Ingrese el saldo a consignar: ".encode()
         self.request.send(data)
-        #try:
-        data = float(self.request.recv(1024).decode())
-        clientes.set_saldobanco(self.id , data)
-        data = "505. consignación exitosas\n".encode()
-        self.request.send(data)
-        self.lista()
-        #except:
-         #   data = "202. Consignacion invalidad\n".encode()
-          #  self.request.send(data)
-           # self.lista()
+        try:
+            data = float(self.request.recv(1024).decode())
+            clientes.set_saldobanco(self.id , data)
+            data = "505. consignación exitosas\n".encode()
+            self.request.send(data)
+            self.lista()
+        except:
+            data = "202. Consignacion invalidad\n".encode()
+            self.request.send(data)
+            self.lista()
     def retirar(self):
         data = "405. Ingrese el saldo a retirar: ".encode()
         self.request.send(data)
