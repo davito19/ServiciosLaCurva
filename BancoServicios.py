@@ -1,55 +1,5 @@
-from socketserver import ThreadingTCPServer, BaseRequestHandler, ThreadingUDPServer
-import objetos as ob
-import sqlite3 as sql
-
-
-class BaseDatos:
-    def __init__(self, base_datos : str, table : str):
-        self.base_datos = base_datos
-        self.conexion = sql.connect(self.base_datos, check_same_thread=False)
-        self.cursor = self.conexion.cursor()
-    def __str__(self):
-        return "Base de datos de {}".format(self.base_datos)
-
-class DataCliente(BaseDatos):
-    def __init__(self, base_datos : str, table : str):
-        super().__init__(base_datos, table)
-        self.cursor.execute("SELECT * FROM " + table)
-        self.data = self.cursor.fetchall()
-        self.clientes = {}
-        for i in self.data:
-            moves = i[6].split(";")
-            self.clientes[i[0]] = ob.ClienteBanco(i[0],i[1],i[2],i[3],i[4],i[5],moves)
-    def search_id(self, id):
-        for key in self.clientes:
-            if id == self.clientes[key].get_id():
-                return True
-        return False
-    def search_password(self, id, password):
-        if self.clientes[id].password_validation(password):
-            return True
-        else:
-            return False
-    def get_data(self):
-        return self.data
-    def get_saldobanco(self,id):
-        return self.clientes[id].get_saldo()
-    def set_saldobanco(self, id, cantidad):
-        self.clientes[id].consignar(cantidad)
-        self.refresh(id)
-    def retire_saldo(self, id, cantidad):
-        if self.get_saldobanco(id) >= cantidad:
-            self.clientes[id].retirar(cantidad)
-            self.refresh(id)
-            return True
-        else:
-            return False
-    def refresh(self, id):
-        sql = "UPDATE Clientes SET Saldo = '"+str(self.get_saldobanco(id))+ "' where ID = '" + id +"'"
-        self.cursor.execute(sql)
-        self.conexion.commit()
-
-clientes =  DataCliente("clientes_banco", "Clientes")
+from socketserver import ThreadingTCPServer, BaseRequestHandler
+from base_datos import clientes 
 
 class QueHacer(BaseRequestHandler):
     def handle(self):
@@ -58,7 +8,7 @@ class QueHacer(BaseRequestHandler):
         while True:
                 data = self.request.recv(1024).decode()
                 if data == '1\r\n':
-                    print("quiere logguearse")
+                    #print("quiere logguearse")
                     if self.loggueo():
                         break
                     self.lista_loggue()
@@ -155,6 +105,5 @@ class QueHacer(BaseRequestHandler):
             self.lista()
 
 
-
-myserver = ThreadingTCPServer(("localhost", 5559), QueHacer)
+myserver = ThreadingTCPServer(("localhost", 5551), QueHacer)
 myserver.serve_forever()
