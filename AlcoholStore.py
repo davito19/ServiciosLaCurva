@@ -1,6 +1,7 @@
 from socketserver import ThreadingTCPServer, BaseRequestHandler
 from base_datos import alco
 from base_datos import clientesA as clientes
+from alcohlesserveudp import udpconexion
 
 users = 0
 
@@ -61,11 +62,11 @@ class QueHacer(BaseRequestHandler):
         self.request.send(data)
         data = self.request.recv(1024).decode()
         if clientes.search_id(data[:-2]):
-            id = data[:-2]
+            self.id = data[:-2]
             data = '403. Usuario correcto ingrese contraseña\n'.encode()
             self.request.send(data)
             data = self.request.recv(1024).decode()
-            if clientes.search_password(id, data[:-2]):
+            if clientes.search_password(self.id, data[:-2]):
                 data = '502. Loggueo exitoso\n'.encode()
                 self.request.send(data)
                 return True
@@ -94,8 +95,13 @@ class QueHacer(BaseRequestHandler):
         data =  self.request.recv(1024).decode()
         cantidad = int(data[:-2])
         if alco.comprar_alcoholes(id, cantidad):
-            data = "506. Compra exitosa \n".encode()
-            self.request.send(data)
+            bo = udpconexion(clientes.clientes[self.id].get_account()+3, cantidad*alco.alcoholes[id].get_price()-3)
+            if bo == "True\n":
+                data = "506. Compra exitosa \n".encode()
+                self.request.send(data)
+            else:
+                data = "305. Saldo insuficiente \n".encode()
+                self.request.send(data)
         else:
             data = "304. No hay suficiente inventario disponible \n".encode()
             self.request.send(data)
