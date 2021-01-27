@@ -7,8 +7,8 @@ class QueHacerUdp(BaseRequestHandler):
         data, conn = self.request
         conn.sendto("501\n".encode(),self.client_address)
         data = data.decode().split(";")
-        cuenta = int(data[0])
-        cobro = int(data[1])
+        cuenta = int(data[0])-3
+        cobro = int(data[1])+3
         user = clientes.obtener_key(cuenta)
         if clientes.retire_saldo(user, cobro):
             conn.sendto("True\n".encode(), self.client_address)
