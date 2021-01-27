@@ -115,7 +115,7 @@ class ClienteBanco(Cliente):
         self.saldo = saldo
     def consignar(self, cantidad):
         self.saldo += cantidad
-        self.moves.append("consignacion de ${}".format(cantidad))
+        self.moves.append("consignacion {};".format(cantidad))
     def retirar(self, cantidad):
         self.saldo -= cantidad
         self.moves.append("retiro de ${}".format(cantidad))
