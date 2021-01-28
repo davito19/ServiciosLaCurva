@@ -1,5 +1,10 @@
 from socketserver import ThreadingTCPServer, BaseRequestHandler
-from base_datos import clientes 
+from base_datos import clientes
+from sys import argv, exit
+
+if len(argv) != 2:
+    print("you are idiot")
+    exit(1)
 
 class QueHacer(BaseRequestHandler):
     def handle(self):
@@ -104,6 +109,6 @@ class QueHacer(BaseRequestHandler):
             self.request.send(data)
             self.lista()
 
-
-myserver = ThreadingTCPServer(("localhost", 5569), QueHacer)
+ip = str(argv[1])
+myserver = ThreadingTCPServer((ip, 5569), QueHacer)
 myserver.serve_forever()
