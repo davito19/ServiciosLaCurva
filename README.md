@@ -15,8 +15,8 @@ Ademas atiende conexiones UDP cifradas por el puerto 6689 para realizar pagos de
 # Ejecucion
 
 corra el programa pro.py utilizando el comando en consola:
->> python3 pro.py
+>> python3 pro.py "ip_server"
 
-Asegurese de estar parado sobre la carpeta donde se encuentra el archivo.
+Asegurese de estar parado sobre la carpeta donde se encuentra el archivo y que la ip corresponda a la maquina que ejecuta.
 
-para realizar una conexion con los servidores utilice telnet o netcat especificando el puerto según su necesidad.
+para realizar una conexion con los servidores utilice telnet o netcat especificando la ip del servidor y el puerto según su necesidad.
