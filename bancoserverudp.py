@@ -1,5 +1,10 @@
 from socketserver import BaseRequestHandler, ThreadingUDPServer
 from base_datos import clientes 
+from sys import argv, exit
+
+if len(argv) != 2:
+    print("you are idiot")
+    exit(1)
 
 class QueHacerUdp(BaseRequestHandler):
     def handle(self):
@@ -16,5 +21,6 @@ class QueHacerUdp(BaseRequestHandler):
             conn.sendto("False\n".encode(), self.client_address)
     #def decodificar(self)
 
-udp = ThreadingUDPServer(("localhost", 6689), QueHacerUdp)
+ip = str(argv[1])
+udp = ThreadingUDPServer((ip, 6689), QueHacerUdp)
 udp.serve_forever()
