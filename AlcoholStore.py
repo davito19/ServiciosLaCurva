@@ -2,8 +2,14 @@ from socketserver import ThreadingTCPServer, BaseRequestHandler
 from base_datos import alco
 from base_datos import clientesA as clientes
 from alcohlesserveudp import udpconexion
+from sys import argv, exit
+
+if len(argv) != 2:
+    print("you are idiot")
+    exit(1)
 
 users = 0
+ip = str(argv[1])
 
 class QueHacer(BaseRequestHandler):
     def handle(self):
@@ -95,7 +101,7 @@ class QueHacer(BaseRequestHandler):
         data =  self.request.recv(1024).decode()
         cantidad = int(data[:-2])
         if alco.comprar_alcoholes(id, cantidad):
-            bo = udpconexion(clientes.clientes[self.id].get_account()+3, cantidad*alco.alcoholes[id].get_price()-3)
+            bo = udpconexion(clientes.clientes[self.id].get_account()+3, cantidad*alco.alcoholes[id].get_price()-3, ip)
             if bo == "True\n":
                 data = "506. Compra exitosa \n".encode()
                 self.request.send(data)
@@ -110,7 +116,7 @@ class QueHacer(BaseRequestHandler):
 
 
 
-myserver = ThreadingTCPServer(("localhost", 5559), QueHacer)
+myserver = ThreadingTCPServer((ip, 5559), QueHacer)
 myserver.serve_forever()
 
 
